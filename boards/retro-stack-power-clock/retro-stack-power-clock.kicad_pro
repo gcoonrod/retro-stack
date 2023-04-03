@@ -55,7 +55,16 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "zones_intersect|189230000|79375000|9e02521c-22f5-42d8-a999-e049413cbd12|d38e9a1f-27ae-40fc-ab1e-e1570e124a98",
+        "zones_intersect|189230000|83185000|9e02521c-22f5-42d8-a999-e049413cbd12|d38e9a1f-27ae-40fc-ab1e-e1570e124a98",
+        "zones_intersect|192659000|79375000|9e02521c-22f5-42d8-a999-e049413cbd12|d38e9a1f-27ae-40fc-ab1e-e1570e124a98",
+        "zones_intersect|192786000|83185000|9e02521c-22f5-42d8-a999-e049413cbd12|d38e9a1f-27ae-40fc-ab1e-e1570e124a98",
+        "zones_intersect|193040000|79756000|9e02521c-22f5-42d8-a999-e049413cbd12|d38e9a1f-27ae-40fc-ab1e-e1570e124a98",
+        "zones_intersect|193294000|82677000|9e02521c-22f5-42d8-a999-e049413cbd12|d38e9a1f-27ae-40fc-ab1e-e1570e124a98",
+        "zones_intersect|195707000|79756000|9e02521c-22f5-42d8-a999-e049413cbd12|d38e9a1f-27ae-40fc-ab1e-e1570e124a98",
+        "zones_intersect|195707000|82677000|9e02521c-22f5-42d8-a999-e049413cbd12|d38e9a1f-27ae-40fc-ab1e-e1570e124a98"
+      ],
       "meta": {
         "version": 2
       },
@@ -132,7 +141,7 @@
           "drill": 0.0
         },
         {
-          "diameter": 0.5,
+          "diameter": 0.6,
           "drill": 0.3
         },
         {
@@ -363,7 +372,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "retro-stack-template.kicad_pro",
+    "filename": "retro-stack-power-clock.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -395,7 +404,15 @@
         "microvia_diameter": 0.3,
         "microvia_drill": 0.1,
         "name": "Power",
-        "nets": [],
+        "nets": [
+          "+5V",
+          "/DC_IN",
+          "/VDD",
+          "/VSS",
+          "/V_FUSE",
+          "/V_RAW",
+          "GND"
+        ],
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.3,
@@ -413,11 +430,59 @@
         "microvia_diameter": 0.3,
         "microvia_drill": 0.1,
         "name": "Signal",
-        "nets": [],
+        "nets": [
+          "/A0",
+          "/A1",
+          "/A10",
+          "/A11",
+          "/A12",
+          "/A13",
+          "/A14",
+          "/A15",
+          "/A2",
+          "/A3",
+          "/A4",
+          "/A5",
+          "/A6",
+          "/A7",
+          "/A8",
+          "/A9",
+          "/BE",
+          "/CLK",
+          "/D0",
+          "/D1",
+          "/D2",
+          "/D3",
+          "/D4",
+          "/D5",
+          "/D6",
+          "/D7",
+          "/FAST",
+          "/FAST_CLK",
+          "/FAST_CV",
+          "/FAST_DIS",
+          "/FAST_RV",
+          "/FAST_TR",
+          "/FAST_~{SLOW}",
+          "/HLT",
+          "/MODE_CV",
+          "/MODE_R",
+          "/MODE_TR",
+          "/PHI2",
+          "/PLS_CV",
+          "/PLS_DIS_THR",
+          "/PLS_TR",
+          "/PRE_CLK",
+          "/PULSE_CLK",
+          "/SLOW",
+          "/~{CLK}",
+          "/~{FAST}_SLOW",
+          "/~{HLT}"
+        ],
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
         "track_width": 0.2,
-        "via_diameter": 0.5,
+        "via_diameter": 0.6,
         "via_drill": 0.3,
         "wire_width": 6.0
       }

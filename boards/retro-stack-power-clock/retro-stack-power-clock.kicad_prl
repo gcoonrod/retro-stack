@@ -62,11 +62,11 @@
       35,
       36
     ],
-    "visible_layers": "ffffeff_ffffffff",
+    "visible_layers": "ffdfeff_ffffffff",
     "zone_display_mode": 0
   },
   "meta": {
-    "filename": "retro-stack-template.kicad_prl",
+    "filename": "retro-stack-power-clock.kicad_prl",
     "version": 3
   },
   "project": {
