@@ -55,7 +55,12 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "courtyards_overlap|151870001|54070001|378bcc67-ae70-44c4-b28c-fa4e8536e705|07216480-e635-4e2e-a711-be64b90782be",
+        "courtyards_overlap|151870001|54070001|e3f7e9b2-4be8-4d27-b53c-804f6b0a4885|07216480-e635-4e2e-a711-be64b90782be",
+        "courtyards_overlap|154410001|54070001|e49ec085-2b66-4701-a794-c9123c418e25|378bcc67-ae70-44c4-b28c-fa4e8536e705",
+        "courtyards_overlap|154410001|54080001|cd32ffc5-f74b-4ea2-aee9-b19c67f2f2ad|e3f7e9b2-4be8-4d27-b53c-804f6b0a4885"
+      ],
       "meta": {
         "version": 2
       },
@@ -154,7 +159,21 @@
     "equivalence_files": []
   },
   "erc": {
-    "erc_exclusions": [],
+    "erc_exclusions": [
+      "label_dangling|406400|711200|eadcc155-f2c8-4aaf-8b5e-be77423f8703|00000000-0000-0000-0000-000000000000",
+      "label_dangling|406400|736600|ae8bf123-5f5e-41e6-8b35-6522e962d713|00000000-0000-0000-0000-000000000000",
+      "label_dangling|406400|762000|0dc46ddb-7651-4749-9bb5-48be226b96e2|00000000-0000-0000-0000-000000000000",
+      "label_dangling|406400|812800|7a98594c-89ad-4403-a34a-21e84c8a6c25|00000000-0000-0000-0000-000000000000",
+      "label_dangling|406400|838200|41efc5c0-0a99-45f1-9fd2-2a64936b39d0|00000000-0000-0000-0000-000000000000",
+      "label_dangling|660400|711200|d0c70fc6-c130-4c5e-87b5-b0a13e142bc4|00000000-0000-0000-0000-000000000000",
+      "label_dangling|660400|736600|fde63fb9-616c-49e7-b884-87f7ff01856d|00000000-0000-0000-0000-000000000000",
+      "label_dangling|660400|787400|90bc986f-76d0-45e4-88d5-7bd2ed303ff8|00000000-0000-0000-0000-000000000000",
+      "label_dangling|660400|812800|a5c5410c-1061-4eaa-b476-be0638878447|00000000-0000-0000-0000-000000000000",
+      "label_dangling|660400|838200|6eb44c48-a855-42ea-8427-bb3d15961cef|00000000-0000-0000-0000-000000000000",
+      "label_dangling|660400|863600|99b6e646-a0ae-4319-94de-c3d8e45bc771|00000000-0000-0000-0000-000000000000",
+      "multiple_net_names|406400|1193800|c0a21a90-8351-4989-8d25-ac6c82ecbbb7|c29712ee-8123-4bb0-9361-7764b77c1905",
+      "multiple_net_names|660400|889000|eb2a29b1-0925-4f3f-9c6b-1edd091bf9ff|cfbf5210-813e-446c-b6cd-826cab66781c"
+    ],
     "meta": {
       "version": 0
     },
@@ -363,7 +382,7 @@
     "pinned_symbol_libs": []
   },
   "meta": {
-    "filename": "retro-stack-cpu.kicad_pro",
+    "filename": "retro-stack-ram-rom.kicad_pro",
     "version": 1
   },
   "net_settings": {
@@ -434,8 +453,6 @@
           "/A8",
           "/A9",
           "/BE",
-          "/CXO_EN",
-          "/CXO_OUT",
           "/D0",
           "/D1",
           "/D2",
@@ -447,16 +464,30 @@
           "/PHI1O",
           "/PHI2",
           "/PHI2O",
+          "/PLDCK",
+          "/PLD_RAM_~{CS}",
+          "/PLD_RAM_~{OE}",
+          "/PLD_RAM_~{WE}",
+          "/PLD_ROM_~{CS}",
+          "/PLD_ROM_~{OE}",
+          "/PLD_ROM_~{WE}",
+          "/RAM_~{CS}",
+          "/RAM_~{OE}",
+          "/RAM_~{WE}",
           "/RDY",
+          "/ROM_~{CS}",
+          "/ROM_~{OE}",
+          "/ROM_~{WE}",
           "/R{slash}~{W}",
+          "/SMP_RAM_~{CS}",
           "/SYNC",
+          "/VPB",
+          "/~{A15}",
           "/~{IRQ}",
           "/~{ML}",
           "/~{NMI}",
           "/~{RES}",
-          "/~{RST}",
-          "/~{SO}",
-          "/~{VP}"
+          "/~{SO}"
         ],
         "pcb_color": "rgba(0, 0, 0, 0.000)",
         "schematic_color": "rgba(0, 0, 0, 0.000)",
@@ -476,7 +507,7 @@
       "gencad": "",
       "idf": "",
       "netlist": "",
-      "specctra_dsn": "",
+      "specctra_dsn": "retro-stack-ram-rom.dsn",
       "step": "",
       "vrml": ""
     },
