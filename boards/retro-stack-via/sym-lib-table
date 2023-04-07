@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "65xx")(type "KiCad")(uri "C:/Users/Greg/dev/retro-stack/boards/parts/6502-kicad-library/65xx.kicad_sym")(options "")(descr ""))
+)
