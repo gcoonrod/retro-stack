@@ -1,0 +1,5 @@
+{
+    "sketch": "firmware\\arduino\\monitor\\monitor.ino",
+    "configuration": "cpu=atmega2560",
+    "board": "arduino:avr:mega"
+}
