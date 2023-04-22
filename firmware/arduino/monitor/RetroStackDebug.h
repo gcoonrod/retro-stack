@@ -29,8 +29,14 @@
 #define inROM(address) (address >= ROM_START && address <= ROM_END)
 
 // Define the address and data pins
-const char ADDR[] = {22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52};
-const char DATA[] = {37, 35, 33, 31, 29, 27, 25, 23};
+
+// reverse the order of the address pins
+const char ADDR2[] = {22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52};
+const char ADDR[] = {52, 50, 48, 46, 44, 42, 40, 38, 36, 34, 32, 30, 28, 26, 24, 22};
+
+const char DATA2[] = {37, 35, 33, 31, 29, 27, 25, 23};
+const char DATA[] = {23, 25, 27, 29, 31, 33, 35, 37};
+
 
 // Define the control pins
 #define BE      39
@@ -39,7 +45,7 @@ const char DATA[] = {37, 35, 33, 31, 29, 27, 25, 23};
 #define NMIB    45
 #define IRQB    47
 #define RWB     49
-#define PHI2    51
+#define PHI2    2
 #define RESB    53
 
 // Op Codes

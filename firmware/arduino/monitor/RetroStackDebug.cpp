@@ -94,15 +94,18 @@ uint8_t readROM(uint16_t address) {
         case 0x800A:
         case 0x800B:
         case 0x800C:
-        case 0x800D:
-        case 0x800E:
-        case 0x800F:
             return NOP;
+        case 0x800D:
+            return 0x4c;
+        case 0x800E:
+            return 0x00;
+        case 0x800F:
+            return 0x80;
         case 0xFFFC:
             return 0x00;
         case 0xFFFD:
             return 0x80;
         default:
-            return 0x00;
+            return NOP;
     }
 }

@@ -24,10 +24,11 @@ void setup() {
     setDataDirection(dataDirection);
 
     // Set up the control pins
-    setControlDirections(0xff, INPUT);
+    //setControlDirections(0xff, INPUT);
+    pinMode(2, INPUT);
 
     // Set up the interrupt
-    attachInterrupt(digitalPinToInterrupt(PHI2), onClockRise, RISING);
+    attachInterrupt(digitalPinToInterrupt(2), onClockRise, RISING);
 
     // Set up the serial port
     Serial.begin(115200);
@@ -56,16 +57,37 @@ void onClockRise() {
         dataDirection = OUTPUT;
         setDataDirection(dataDirection);
         writeData(data);
+        Serial.print(F("ROM: "));
+        printBinaryByte(data);
+        Serial.println();
     } else {
         data = readData();
     }
 
+    //data = readData();
+
 
     char output[15];
+    printBinaryWord(address);
     Serial.print("   ");
+    printBinaryByte(data);
     sprintf(output, "   %04x  %c %02x", address, digitalRead(RWB) ? 'r' : 'W', data);
     Serial.println(output);
     cli();
+}
+
+void printBinaryWord(uint16_t word) {
+    for (int n = 0; n < 16; n += 1) {
+        int bit = (word >> (15 - n)) & 1;
+        Serial.print(bit);
+    }
+}
+
+void printBinaryByte(uint8_t byte) {
+    for (int n = 0; n < 8; n += 1) {
+        int bit = (byte >> (7 - n)) & 1;
+        Serial.print(bit);
+    }
 }
 
 
