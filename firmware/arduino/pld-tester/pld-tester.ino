@@ -1,47 +1,65 @@
 // Define Outputs
 #define RWB 2
 #define CLK 3
-#define A9  4
+#define A9 4
 #define A10 5
 #define A11 6
 #define A12 7
 #define A13 8
 #define A14 9
 #define A15 10
-#define RS0 15
-#define RS1 16
-#define RS2 17
-#define OEB 20
 
 // Define Inputs
-#define RESULT 14
+#define RAM_CSB A0
+#define RAM_OEB A1
+#define RAM_WEB A2
+#define ROM_CSB A3
+#define ROM_OEB A4
+
+// Define Address Bit Masks
+#define A9_MASK 0x0200
+#define A10_MASK 0x0400
+#define A11_MASK 0x0800
+#define A12_MASK 0x1000
+#define A13_MASK 0x2000
+#define A14_MASK 0x4000
+#define A15_MASK 0x8000
+
+// Define Test Result Bit Masks
+#define RAM_CSB_MASK 0x01
+#define RAM_OEB_MASK 0x02
+#define RAM_WEB_MASK 0x04
+#define ROM_CSB_MASK 0x08
+#define ROM_OEB_MASK 0x10
 
 #define NUM_TESTS 4
 
 // Define Test Case Struct
-struct TestCase {
+struct TestCase
+{
     uint16_t address;
-    bool rwb;
-    bool clk;
-    bool oeb;
-    uint8_t result;
+    uint8_t rwb;
+    uint8_t clk;
+    uint8_t expected;
 };
 
 // Define Test Cases
 const TestCase testCases[NUM_TESTS] = {
-    // address, rwb, clk, oeb, result
-    {0x0000, false, false, false, 0x00},
+    // address, rwb, clk, expected
+    {0x0000, HIGH, HIGH, 0b00011100},
     // Read from 0xFFFC
-    {0xFFFC, true, false, false, 0x00},
+    {0xFFFC, HIGH, LOW, 0b00000111},
     // Read from 0x8000
-    {0x8000, true, false, false, 0x00},
+    {0x8000, HIGH, LOW, 0b00000111},
     // Write to 0x0100
-    {0x0100, false, false, false, 0x00},
+    {0x0100, LOW, HIGH, 0b00011010},
 };
+
+volatile int currentTest = 0;
 
 void setup()
 {
-	// Set Outputs
+    // Set Outputs
     pinMode(RWB, OUTPUT);
     pinMode(CLK, OUTPUT);
     pinMode(A9, OUTPUT);
@@ -51,14 +69,14 @@ void setup()
     pinMode(A13, OUTPUT);
     pinMode(A14, OUTPUT);
     pinMode(A15, OUTPUT);
-    pinMode(RS0, OUTPUT);
-    pinMode(RS1, OUTPUT);
-    pinMode(RS2, OUTPUT);
-    pinMode(OEB, OUTPUT);
-    
+
     // Set Inputs
-    pinMode(RESULT, INPUT);
-    
+    pinMode(RAM_CSB, INPUT_PULLUP);
+    pinMode(RAM_OEB, INPUT_PULLUP);
+    pinMode(RAM_WEB, INPUT_PULLUP);
+    pinMode(ROM_CSB, INPUT_PULLUP);
+    pinMode(ROM_OEB, INPUT_PULLUP);
+
     // Set Outputs to LOW
     digitalWrite(RWB, LOW);
     digitalWrite(CLK, LOW);
@@ -69,95 +87,104 @@ void setup()
     digitalWrite(A13, LOW);
     digitalWrite(A14, LOW);
     digitalWrite(A15, LOW);
-    digitalWrite(RS0, LOW);
-    digitalWrite(RS1, LOW);
-    digitalWrite(RS2, LOW);
-    digitalWrite(OEB, LOW);
 
     // Setup Serial at 115200 baud
     Serial.begin(115200);
-    Serial.println("PLD Tester");
-
-    // Run Test Cases
-    for (int i = 0; i < NUM_TESTS; i++) {
-        // Print test case with test number
-        Serial.print(F("Test "));
-        Serial.print(i + 1);
-        Serial.println(F(": "));
-
-
-
-        // Update State
-        updateState(testCases[i].address, testCases[i].rwb, testCases[i].clk, testCases[i].oeb);
-        
-        // Read Result
-        uint8_t result = readResult();
-        
-        // Print Result
-        Serial.print(F("\tAddress: 0x"));
-        Serial.print(testCases[i].address, HEX);
-        Serial.print(F(", RWB: "));
-        Serial.print(testCases[i].rwb);
-        Serial.print(F(", CLK: "));
-        Serial.print(testCases[i].clk);
-        Serial.print(F(", OEB: "));
-        Serial.print(testCases[i].oeb);
-        Serial.print(F(", Result: 0b"));
-        Serial.print(result, BIN);
-        Serial.print(F(", Expected: 0b"));
-        Serial.println(testCases[i].result, BIN);
-        decodeResult(result);
+    while (!Serial)
+    {
+        ;
     }
+    Serial.println("PLD Tester");
+    Serial.println("Press 'n' to run next test");
 }
 
 void loop()
 {
-	
+    if (Serial.available() > 0)
+    {
+        int incomingByte = Serial.read();
+        if (incomingByte == 'n')
+        {
+
+            Serial.print(F("Test "));
+            Serial.print(currentTest + 1);
+            Serial.print(F(": "));
+
+            // Run Test
+            runTest(&testCases[currentTest]);
+
+            // Read Result
+            uint8_t result = readResult();
+            if (result == testCases[currentTest].expected)
+            {
+                Serial.println(F("\tPASS"));
+                
+            }
+            else
+            {
+                Serial.println(F("\tFAIL"));
+                // Print Result
+                Serial.print(F("\tAddress: 0x"));
+                Serial.print(testCases[currentTest].address, HEX);
+                Serial.print(F(", RWB: "));
+                Serial.print(testCases[currentTest].rwb, DEC);
+                Serial.print(F(", CLK: "));
+                Serial.print(testCases[currentTest].clk, DEC);
+                Serial.print(F(", Result: 0b"));
+                Serial.print(result, BIN);
+                Serial.print(F(", Expected: 0b"));
+                Serial.println(testCases[currentTest].expected, BIN);
+
+                // Print Result in Human Readable Format
+                Serial.print(F("\tRAM_CS: "));
+                Serial.print((result & RAM_CSB_MASK) ? "HIGH" : "LOW");
+                Serial.print(F(", RAM_OE: "));
+                Serial.print((result & RAM_OEB_MASK) ? "HIGH" : "LOW");
+                Serial.print(F(", RAM_WE: "));
+                Serial.print((result & RAM_WEB_MASK) ? "HIGH" : "LOW");
+                Serial.print(F(", ROM_CS: "));
+                Serial.print((result & ROM_CSB_MASK) ? "HIGH" : "LOW");
+                Serial.print(F(", ROM_OE: "));
+                Serial.println((result & ROM_OEB_MASK) ? "HIGH" : "LOW");
+            }
+
+            // Increment Test
+            currentTest++;
+            if (currentTest >= NUM_TESTS)
+            {
+                currentTest = 0;
+            }
+        }
+    }
 }
 
-uint8_t readResult() {
-    // Read result from 74HC151, update RS0, RS1, RS2 between each bit
+uint8_t readResult()
+{
+    // Shift inputs into result
     uint8_t result = 0;
-    for (int i = 0; i < 8; i++) {
-        // Set RS0, RS1, RS2
-        digitalWrite(RS0, i & 0x01);
-        digitalWrite(RS1, i & 0x02);
-        digitalWrite(RS2, i & 0x04);
-        
-        // Read result
-        result |= (digitalRead(RESULT) << i);
-    }
+    result |= digitalRead(ROM_OEB) << 4;
+    result |= digitalRead(ROM_CSB) << 3;
+    result |= digitalRead(RAM_WEB) << 2;
+    result |= digitalRead(RAM_OEB) << 1;
+    result |= digitalRead(RAM_CSB);
+
     return result;
 }
 
-void updateState(uint16_t address, bool rwb, bool clk, bool oeb) {
-    // Set RWB, CLK, OEB
-    digitalWrite(RWB, rwb);
-    digitalWrite(CLK, clk);
-    digitalWrite(OEB, oeb);
-    
-    // Set A9, A10, A11, A12, A13, A14, A15 to cover a 16-bit address
-    digitalWrite(A15, (address & 0x8000) ? HIGH : LOW);
-    digitalWrite(A14, (address & 0x4000) ? HIGH : LOW);
-    digitalWrite(A13, (address & 0x2000) ? HIGH : LOW);
-    digitalWrite(A12, (address & 0x1000) ? HIGH : LOW);
-    digitalWrite(A11, (address & 0x0800) ? HIGH : LOW);
-    digitalWrite(A10, (address & 0x0400) ? HIGH : LOW);
-    digitalWrite(A9, (address & 0x0200) ? HIGH : LOW);
-}
+void runTest(const TestCase *test)
+{
+    // Set Address
+    digitalWrite(A9, (test->address & A9_MASK) ? HIGH : LOW);
+    digitalWrite(A10, (test->address & A10_MASK) ? HIGH : LOW);
+    digitalWrite(A11, (test->address & A11_MASK) ? HIGH : LOW);
+    digitalWrite(A12, (test->address & A12_MASK) ? HIGH : LOW);
+    digitalWrite(A13, (test->address & A13_MASK) ? HIGH : LOW);
+    digitalWrite(A14, (test->address & A14_MASK) ? HIGH : LOW);
+    digitalWrite(A15, (test->address & A15_MASK) ? HIGH : LOW);
 
-void decodeResult(uint8_t result) {
-    // Decode result from 74HC151
-    // Print result
-    Serial.print(F("\tRAM_CS: "));
-    Serial.print((result & 0x01) ? "HIGH" : "LOW");
-    Serial.print(F(", RAM_OE: "));
-    Serial.print((result & 0x02) ? "HIGH" : "LOW");
-    Serial.print(F(", RAM_WE: "));
-    Serial.print((result & 0x04) ? "HIGH" : "LOW");
-    Serial.print(F(", ROM_CS: "));
-    Serial.print((result & 0x08) ? "HIGH" : "LOW");
-    Serial.print(F(", ROM_OE: "));
-    Serial.println((result & 0x10) ? "HIGH" : "LOW");
+    // Set RWB
+    digitalWrite(RWB, test->rwb);
 
+    // Set CLK
+    digitalWrite(CLK, test->clk);
 }

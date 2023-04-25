@@ -26,10 +26,14 @@ PIN 17 = !RAM_WE;
 PIN 16 = !ROM_CS;
 PIN 15 = !ROM_OE;
 
-/** Logic equations **/
-!RAM_CS = !A15 & !PHI2; /* Address 0x0000 to 0x3FFF */
-!RAM_OE = A14 & RWB;
-!RAM_WE = !A15 & !PHI2 & !RWB;
+/** Intermediate Values **/
+IN_RAM = !A15 & !A14;
+IN_ROM = A15;
 
-!ROM_CS = A15; /* Address 0x8000 to 0xFFFF */
-!ROM_OE = A15 & RWB;
+/** Logic equations **/
+RAM_CS = IN_RAM & PHI2; /* Address 0x0000 to 0x3FFF */
+RAM_OE = IN_RAM & RWB;
+RAM_WE = IN_RAM & !RWB;
+
+ROM_CS = IN_ROM; /* Address 0x8000 to 0xFFFF */
+ROM_OE = IN_ROM & RWB;
