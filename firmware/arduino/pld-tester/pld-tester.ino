@@ -32,8 +32,6 @@
 #define ROM_CSB_MASK 0x08
 #define ROM_OEB_MASK 0x10
 
-#define NUM_TESTS 4
-
 // Define Test Case Struct
 struct TestCase
 {
@@ -44,8 +42,10 @@ struct TestCase
 };
 
 // Define Test Cases
+// address, rwb, clk, expected
+#define NUM_TESTS 5
 const TestCase testCases[NUM_TESTS] = {
-    // address, rwb, clk, expected
+    // Read from 0x0000
     {0x0000, HIGH, HIGH, 0b00011100},
     // Read from 0xFFFC
     {0xFFFC, HIGH, LOW, 0b00000111},
@@ -53,7 +53,12 @@ const TestCase testCases[NUM_TESTS] = {
     {0x8000, HIGH, LOW, 0b00000111},
     // Write to 0x0100
     {0x0100, LOW, HIGH, 0b00011010},
+    // Read from IO
+    {0x4006, HIGH, LOW, 0b00011111},
 };
+
+// Test result array initialized to zeros
+uint8_t testResults[NUM_TESTS] = {0};
 
 volatile int currentTest = 0;
 
@@ -94,66 +99,18 @@ void setup()
     {
         ;
     }
-    Serial.println("PLD Tester");
-    Serial.println("Press 'n' to run next test");
+    Serial.println(F("PLD Tester"));
+    Serial.println(F("Press 'n' to run test suite"));
 }
 
 void loop()
 {
-    if (Serial.available() > 0)
+    if (Serial.available())
     {
-        int incomingByte = Serial.read();
-        if (incomingByte == 'n')
+        char c = Serial.read();
+        if (c == 'n')
         {
-
-            Serial.print(F("Test "));
-            Serial.print(currentTest + 1);
-            Serial.print(F(": "));
-
-            // Run Test
-            runTest(&testCases[currentTest]);
-
-            // Read Result
-            uint8_t result = readResult();
-            if (result == testCases[currentTest].expected)
-            {
-                Serial.println(F("\tPASS"));
-                
-            }
-            else
-            {
-                Serial.println(F("\tFAIL"));
-                // Print Result
-                Serial.print(F("\tAddress: 0x"));
-                Serial.print(testCases[currentTest].address, HEX);
-                Serial.print(F(", RWB: "));
-                Serial.print(testCases[currentTest].rwb, DEC);
-                Serial.print(F(", CLK: "));
-                Serial.print(testCases[currentTest].clk, DEC);
-                Serial.print(F(", Result: 0b"));
-                Serial.print(result, BIN);
-                Serial.print(F(", Expected: 0b"));
-                Serial.println(testCases[currentTest].expected, BIN);
-
-                // Print Result in Human Readable Format
-                Serial.print(F("\tRAM_CS: "));
-                Serial.print((result & RAM_CSB_MASK) ? "HIGH" : "LOW");
-                Serial.print(F(", RAM_OE: "));
-                Serial.print((result & RAM_OEB_MASK) ? "HIGH" : "LOW");
-                Serial.print(F(", RAM_WE: "));
-                Serial.print((result & RAM_WEB_MASK) ? "HIGH" : "LOW");
-                Serial.print(F(", ROM_CS: "));
-                Serial.print((result & ROM_CSB_MASK) ? "HIGH" : "LOW");
-                Serial.print(F(", ROM_OE: "));
-                Serial.println((result & ROM_OEB_MASK) ? "HIGH" : "LOW");
-            }
-
-            // Increment Test
-            currentTest++;
-            if (currentTest >= NUM_TESTS)
-            {
-                currentTest = 0;
-            }
+           runAllTests();
         }
     }
 }
@@ -169,6 +126,11 @@ uint8_t readResult()
     result |= digitalRead(RAM_CSB);
 
     return result;
+}
+
+void storeResult(uint8_t result)
+{
+    testResults[currentTest] = result;
 }
 
 void runTest(const TestCase *test)
@@ -187,4 +149,60 @@ void runTest(const TestCase *test)
 
     // Set CLK
     digitalWrite(CLK, test->clk);
+}
+
+void runAllTests()
+{
+    int passCount = 0;
+    for (int i = 0; i < NUM_TESTS; i++)
+    {
+        runTest(&testCases[i]);
+        uint8_t result = readResult();
+        if(result == testCases[i].expected) {
+            passCount++;
+        }
+        storeResult(result);
+    }
+
+    if(passCount == NUM_TESTS) {
+        Serial.println(F("All Tests Passed!"));
+    } else {
+        Serial.print(F("Failed "));
+        Serial.print(NUM_TESTS - passCount);
+        Serial.print(F(" out of "));
+        Serial.print(NUM_TESTS);
+        Serial.println(F(" tests"));
+
+        // Print failed test results
+        for (int i = 0; i < NUM_TESTS; i++)
+        {
+            if(testResults[i] != testCases[i].expected) {
+                Serial.print(F("\tTest "));
+                Serial.print(i + 1);
+                Serial.print(F(": "));
+                Serial.print(F("\tAddress: 0x"));
+                Serial.print(testCases[i].address, HEX);
+                Serial.print(F(", RWB: "));
+                Serial.print(testCases[i].rwb, DEC);
+                Serial.print(F(", CLK: "));
+                Serial.print(testCases[i].clk, DEC);
+                Serial.print(F(", Result: 0b"));
+                Serial.print(testResults[i], BIN);
+                Serial.print(F(", Expected: 0b"));
+                Serial.println(testCases[i].expected, BIN);
+
+                // Print Result in Human Readable Format
+                Serial.print(F("\tRAM_CS: "));
+                Serial.print((testResults[i] & RAM_CSB_MASK) ? "HIGH" : "LOW");
+                Serial.print(F(", RAM_OE: "));
+                Serial.print((testResults[i] & RAM_OEB_MASK) ? "HIGH" : "LOW");
+                Serial.print(F(", RAM_WE: "));
+                Serial.print((testResults[i] & RAM_WEB_MASK) ? "HIGH" : "LOW");
+                Serial.print(F(", ROM_CS: "));
+                Serial.print((testResults[i] & ROM_CSB_MASK) ? "HIGH" : "LOW");
+                Serial.print(F(", ROM_OE: "));
+                Serial.println((testResults[i] & ROM_OEB_MASK) ? "HIGH" : "LOW");
+            }
+        }
+    }
 }
