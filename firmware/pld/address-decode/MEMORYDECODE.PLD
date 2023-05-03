@@ -1,0 +1,39 @@
+Name     MemoryDecode ;
+PartNo   ATF16V8B ;
+Date     4/23/2023 ;
+Revision 01 ;
+Designer Engineer ;
+Company  Microcode.io ;
+Assembly None ;
+Location None ;
+Device   g16v8 ;
+
+/** Inputs **/
+PIN 1 = PHI2;
+PIN 2 = RWB;
+PIN 3 = A9;
+PIN 4 = A10;
+PIN 5 = A11;
+PIN 6 = A12;
+PIN 7 = A13;
+PIN 8 = A14;
+PIN 9 = A15;
+
+/** Outputs **/
+PIN 19 = !RAM_CS;
+PIN 18 = !RAM_OE;
+PIN 17 = !RAM_WE;
+PIN 16 = !ROM_CS;
+PIN 15 = !ROM_OE;
+
+/** Intermediate Values **/
+IN_RAM = !A15 & !A14;
+IN_ROM = A15;
+
+/** Logic equations **/
+RAM_CS = IN_RAM & PHI2; /* Address 0x0000 to 0x3FFF */
+RAM_OE = IN_RAM & RWB;
+RAM_WE = IN_RAM & !RWB;
+
+ROM_CS = IN_ROM; /* Address 0x8000 to 0xFFFF */
+ROM_OE = IN_ROM & RWB;

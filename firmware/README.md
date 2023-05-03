@@ -16,8 +16,17 @@
 
 # RetroStack Firmware
 
-This folder contains ...
+The RetroStack computer includes a W65C02S processor, PLDs, and Arduinos. Each of these components need software or firmware in order to operate. This folder contains that software broken up by logical "programs" or use-cases.
 
 ## Development and Debugging Utilities
 
 - [Monitor](./arduino/monitor/) - Arduino Mega2560 based bus monitor and ROM emulator.
+- [PLD Tester](./arduino/pld-tester/) - Arduino Nano Every based tool for testing an AT16V8B PLD.
+
+## Programmable Logic
+
+- [Address Decode](./pld/address-decode/) - CUPL files for the various PLDs.
+
+## 6502 Applications
+
+- [Memory Tester](./6502/memory-test/) - Verify current RAM/ROM address map.

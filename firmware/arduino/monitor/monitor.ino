@@ -52,19 +52,19 @@ void onClockRise() {
     uint16_t address = readAddress();
     // If data is in ROM, set data direction to output
     // and write the data to the bus
-    if (inROM(address)) {
-        data = readROM(address);
-        dataDirection = OUTPUT;
-        setDataDirection(dataDirection);
-        writeData(data);
-        Serial.print(F("ROM: "));
-        printBinaryByte(data);
-        Serial.println();
-    } else {
-        data = readData();
-    }
+    // if (inROM(address)) {
+    //     data = readROM(address);
+    //     dataDirection = OUTPUT;
+    //     setDataDirection(dataDirection);
+    //     writeData(data);
+    //     Serial.print(F("ROM: "));
+    //     printBinaryByte(data);
+    //     Serial.println();
+    // } else {
+    //     data = readData();
+    // }
 
-    //data = readData();
+    data = readData();
 
 
     char output[15];
