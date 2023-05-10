@@ -30,3 +30,4 @@ The RetroStack computer includes a W65C02S processor, PLDs, and Arduinos. Each o
 ## 6502 Applications
 
 - [Memory Tester](./6502/memory-test/) - Verify current RAM/ROM address map.
+- [IO Test](./6502/io-test/) - Use an LED bar and W65C22 VIA to display the output of an 8-bit counter.

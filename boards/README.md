@@ -21,6 +21,5 @@ The RetroStack project currently includes the following boards based on a common
 - [Power Supply & 555 Clock](./retro-stack-power-clock/)
 - [W65C02S CPU & High Speed Clock](./retro-stack-cpu/)
 - [SRAM & ROM](./retro-stack-ram-rom/)
-- [W65C22S VIA](./retro-stack-via/)
 - [Arduino Mega Debug Shield](./retro-stack-debug-arduino-mega-shield/)
 - [Debug & Status Display](./retro-stack-debug/)
