@@ -1,0 +1,4 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "ClockEater-Library")(type "KiCad")(uri "C:/Users/Greg/dev/ClockEater/parts/ClockEater-Library.pretty")(options "")(descr ""))
+)
